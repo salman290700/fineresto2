@@ -28,6 +28,7 @@ public class Category {
     @Column(nullable = false)
     private Date updatedAt;
 
+    @Column(unique = true)
     private String name;
 
     public String getId() {

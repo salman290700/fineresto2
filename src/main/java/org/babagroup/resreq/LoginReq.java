@@ -19,6 +19,6 @@ public class LoginReq {
     }
 
     public void setPassword(String password) {
-        this.password = BcryptUtil.bcryptHash(password);
+        this.password = password;
     }
 }

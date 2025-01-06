@@ -1,6 +1,7 @@
 package org.babagroup.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.persistence.*;
@@ -15,6 +16,7 @@ import java.util.Set;
 public class User {
     @Id
     @Column(nullable = false, unique = true, updatable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String id;
 
     @Column(nullable = false, updatable = false)
@@ -54,6 +56,41 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER)
     List<Order> orders;
 
+    @ManyToOne
+    @JoinColumn(name ="restaurant_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
+    private Restaurant restaurant;
+
+    private String fullname;
+
+    private String username;
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
+    }
+
+    @JsonIgnore
     public String getId() {
         return id;
     }
@@ -107,7 +144,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = BcryptUtil.bcryptHash(password,4);
     }
 
     public List<Address> getAddresses() {

@@ -1,8 +1,10 @@
 package org.babagroup.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 
 import java.util.Date;
 import java.util.UUID;
@@ -10,7 +12,8 @@ import java.util.UUID;
 public class Address {
     @Id
     @Column(nullable = false, unique = true, updatable = false)
-    private String id = UUID.randomUUID().toString();
+    @JsonIgnoreProperties
+    private String id;
 
     @Column(nullable = false, updatable = false)
     private String createdBy;
@@ -19,7 +22,7 @@ public class Address {
     private String updatedBy;
 
     @Column(nullable = false, updatable = false)
-    private Date createdAt;
+    private Date createdAt = new Date();
 
     @Column(nullable = false)
     private Date updatedAt = new Date();
@@ -29,6 +32,27 @@ public class Address {
     private String state;
 
     private String country;
+
+    private String city;
+
+//    @OneToOne
+//    private Location location;
+//
+//    public Location getLocation() {
+//        return location;
+//    }
+//
+//    public void setLocation(Location location) {
+//        this.location = location;
+//    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
 
     public String getId() {
         return id;
@@ -93,4 +117,6 @@ public class Address {
     public void setCountry(String country) {
         this.country = country;
     }
+
+
 }

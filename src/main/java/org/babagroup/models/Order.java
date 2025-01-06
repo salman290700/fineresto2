@@ -37,9 +37,15 @@ public class Order {
     private Address address;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> items;
+    private List<OrderItem> items;
 
     private String status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User owner;
+
+//    @OneToOne
+//    private Location location;
 
     public String getStatus() {
         return status;
@@ -113,11 +119,27 @@ public class Order {
         this.address = address;
     }
 
-    public List<CartItem> getItems() {
+    public List<OrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<CartItem> items) {
+    public void setItems(List<OrderItem> items) {
         this.items = items;
     }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+//    public Location getLocation() {
+//        return location;
+//    }
+//
+//    public void setLocation(Location location) {
+//        this.location = location;
+//    }
 }

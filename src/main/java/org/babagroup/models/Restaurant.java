@@ -1,6 +1,8 @@
 package org.babagroup.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -29,9 +31,14 @@ public class Restaurant {
     private Date updatedAt;
 
     @OneToOne
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonIgnore
+    @JsonIgnoreProperties
     private User owner;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnoreProperties
     private List<User> admin;
 
     private String name;
@@ -58,6 +65,7 @@ public class Restaurant {
     private LocalDateTime registrationDate;
 
     private boolean isOpened;
+
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<Food> foods = new ArrayList<>();

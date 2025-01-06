@@ -30,8 +30,8 @@ public class Cart {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private User customer;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> items = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> items = new ArrayList<>();
 
     private Long total;
 
@@ -91,11 +91,11 @@ public class Cart {
         this.total = total;
     }
 
-    public List<CartItem> getItems() {
+    public List<OrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<CartItem> items) {
+    public void setItems(List<OrderItem> items) {
         this.items = items;
     }
 }

@@ -1,5 +1,6 @@
 package org.babagroup.controllers;
 
+import com.fasterxml.jackson.databind.deser.std.UUIDDeserializer;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.logging.Log;
 import jakarta.annotation.security.PermitAll;
@@ -20,12 +21,13 @@ import org.babagroup.resreq.LoginReq;
 import org.babagroup.resreq.RestoOwnerCreateReq;
 import org.babagroup.resreq.UserRegistrationReq;
 import org.babagroup.services.JwtServices;
+import org.babagroup.services.UserServices;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.util.*;
 
-@Path("/auth")
 @ApplicationScoped
+@Path("/auth")
 public class AuthController {
     @Inject
     UserRepository userRepository;
@@ -36,11 +38,14 @@ public class AuthController {
     @Inject
     JwtServices jwtServices;
 
+    @Inject
+    UserServices userServices;
+
     String user_error = "User not found";
     String Email_error = "Email not found";
     String user_error_exists = "Email is already used by another account";
-    String otp_exp = "Your OTP is Expired";
-    String otp_false = "False OTP";
+    String otp_exp = "Your Otp is Expired";
+    String otp_false = "False Otp";
 
     @Path("/create-user-test")
     @POST
@@ -49,7 +54,6 @@ public class AuthController {
     @PermitAll
     public Response createUser(UserRegistrationReq userData) {
 //        Checking email exists
-
         if(userRepository.existsByEmail(userData.getEmail())) {
             return Response.noContent().build();
         }
@@ -145,6 +149,7 @@ public class AuthController {
         user.setRole(roles);
 //        User's address
         Address address = new Address();
+        address.setId(UUID.randomUUID().toString());
         address.setUpdatedBy(uuid);
         address.setCreatedBy(uuid);
         address.setCreatedAt(new Date());
@@ -159,7 +164,7 @@ public class AuthController {
         user.setContactInformation(userData.getContactInformation());
         user.setOrders(new ArrayList<>());
         User savedUser = userRepository.save(user);
-        return Response.ok(savedUser).build();
+        return Response.ok(userServices.mapToDto(savedUser)).build();
     }
 
     @Path("/create-resto-admin")
@@ -227,7 +232,12 @@ public class AuthController {
     @Consumes(MediaType.APPLICATION_JSON)
     @PermitAll
     public Response login(LoginReq loginReq) {
-        User user = userRepository.findByEmailAndPassword(loginReq.getEmail(), loginReq.getPassword()).orElseThrow(() -> new DataError("Please put the right email or password"));
+        Log.info(BcryptUtil.bcryptHash(loginReq.getPassword()));
+
+        User user = userRepository.findByEmail(loginReq.getEmail()).orElseThrow(() -> new DataError("Please put the right email or password"));
+        if(!BcryptUtil.matches(loginReq.getPassword(),  user.getPassword())) {
+            return Response.ok().build();
+        }
         AuthRes res = new AuthRes(jwtServices.generateJwt(user), "Login Success");
         return Response.ok(res).build();
     }
@@ -257,7 +267,6 @@ public class AuthController {
         if(!userRepository.existsByEmail(email)) {
             return Response.noContent().build();
         }
-
         User user = userRepository.findByEmail(email).orElseThrow(() -> new DataError(user_error));
         String link = "http://localhost:8080/auth/forgetting-user-password/" + user.getEmail();
         return Response.ok(link).build();

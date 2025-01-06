@@ -1,5 +1,8 @@
 package org.babagroup.resreq;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+
 public class AuthRes {
     private String jwt;
     private String message;

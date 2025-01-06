@@ -49,9 +49,6 @@ public class Food {
 
     private boolean isSeasonal;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<IngredientsItem> ingredientsItems = new ArrayList<>();
-
     private Long profit;
 
     public String getId() {
@@ -172,13 +169,5 @@ public class Food {
 
     public void setSeasonal(boolean seasonal) {
         isSeasonal = seasonal;
-    }
-
-    public List<IngredientsItem> getIngredientsItems() {
-        return ingredientsItems;
-    }
-
-    public void setIngredientsItems(List<IngredientsItem> ingredientsItems) {
-        this.ingredientsItems = ingredientsItems;
     }
 }

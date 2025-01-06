@@ -1,15 +1,18 @@
 package org.babagroup.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
-public class IngredientsItem {
+public class OrderItem {
     @Id
     @Column(nullable = false, unique = true, updatable = false)
-    private String id;
+    private String id = UUID.randomUUID().toString();
 
     @Column(nullable = false, updatable = false)
     private String createdBy;
@@ -25,16 +28,17 @@ public class IngredientsItem {
     @Column(nullable = false)
     private Date updatedAt;
 
-    private String name;
-
     @ManyToOne(fetch = FetchType.EAGER)
-    private IngredientCategory category;
+    private Food food;
 
-    @JsonIgnore
+    private int quantity;
+
+    private Long price;
+
+    private Long totalPrice;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    private Restaurant restaurant;
-
-    private boolean inStock = true;
+    private User customer;
 
     public String getId() {
         return id;
@@ -76,35 +80,43 @@ public class IngredientsItem {
         this.updatedAt = updatedAt;
     }
 
-    public String getName() {
-        return name;
+    public Food getFood() {
+        return food;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFood(Food food) {
+        this.food = food;
     }
 
-    public IngredientCategory getCategory() {
-        return category;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setCategory(IngredientCategory category) {
-        this.category = category;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
+    public Long getPrice() {
+        return price;
     }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
+    public void setPrice(Long price) {
+        this.price = price;
     }
 
-    public boolean isInStock() {
-        return inStock;
+    public Long getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setInStock(boolean inStock) {
-        this.inStock = inStock;
+    public void setTotalPrice(Long totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public User getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(User customer) {
+        this.customer = customer;
     }
 }
